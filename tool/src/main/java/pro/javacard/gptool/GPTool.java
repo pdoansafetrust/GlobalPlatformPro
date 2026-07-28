@@ -1033,7 +1033,7 @@ public final class GPTool extends GPCommandLineInterface {
 
     // Extract parameters and call GPCommands.load()
     @SuppressWarnings("StatementSwitchToExpressionSwitch")
-    private static void loadCAP(OptionSet args, GPSession gp, CAPFile capFile) throws GPException {
+    private static void loadCAP(OptionSet args, GPSession gp, CAPFile capFile) throws GPException, IOException {
         try {
             final var to = optional(args, OPT_TO).orElse(gp.getAID());
             final var targetDomain = gp.getRegistry().getDomain(to).orElseThrow(() -> new IllegalArgumentException("Target domain does not exist: " + to));

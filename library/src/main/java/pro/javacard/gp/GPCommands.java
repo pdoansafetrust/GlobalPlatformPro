@@ -12,6 +12,7 @@ import pro.javacard.gp.GPData.LFDBH;
 import pro.javacard.gp.GPRegistryEntry.Privilege;
 import pro.javacard.tlv.TLV;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -91,7 +92,7 @@ public final class GPCommands {
 
     // Figure out load parameters
     @SuppressWarnings("StatementSwitchToExpressionSwitch")
-    public static void load(final GPSession gp, final CAPFile cap, final AID to, final AID dapAID, final LFDBH hash) throws GPException {
+    public static void load(final GPSession gp, final CAPFile cap, final AID to, final AID dapAID, final LFDBH hash) throws GPException, IOException {
         final var reg = gp.getRegistry();
 
         // Override target domain

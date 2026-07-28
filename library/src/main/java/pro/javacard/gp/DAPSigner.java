@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pro.javacard.capfile.CAPFile;
 
+import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
 import java.security.Signature;
@@ -20,7 +21,12 @@ public final class DAPSigner {
     private DAPSigner() {}
 
     public static byte[] sign(final CAPFile cap, final PrivateKey key, final GPData.LFDBH hash) throws GeneralSecurityException {
-        final var dtbs = cap.getLoadFileDataHash(hash.algo);
+        final byte[] dtbs;
+        try {
+            dtbs = new CAPFileExt(cap).getLoadFileDataHash(hash.algo);
+        } catch (IOException e) {
+            throw new GeneralSecurityException("Could not build CAP load file data", e);
+        }
         if (key instanceof RSAPrivateKey rkey) {
             log.info("Signing DAP with {} RSA and {}", rkey.getModulus().bitLength(), hash);
             return GPCrypto.rsa_sign(rkey, dtbs);
@@ -31,7 +37,7 @@ public final class DAPSigner {
             log.info("Signing DAP with EC key, component length {} using {}", componentLength, sigAlgo);
             final Signature signer = Signature.getInstance(sigAlgo);
             signer.initSign(key);
-            signer.update(cap.getLoadFileDataHash(hash.algo));
+            signer.update(dtbs);
             return GPCrypto.der2rs(signer.sign(), componentLength);
         }
         throw new IllegalArgumentException("Unsupported DAP key: " + key.getAlgorithm());

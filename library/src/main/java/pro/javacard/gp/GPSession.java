@@ -25,6 +25,7 @@ import pro.javacard.tlv.Tag;
 
 import javax.crypto.SecretKey;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.security.Key;
@@ -586,7 +587,7 @@ public class GPSession {
     }
 
     // Simple LOAD without DAP, but possible LFDBH
-    public void loadCapFile(CAPFile cap, AID targetDomain, GPData.LFDBH hashFunction) throws GPException {
+    public void loadCapFile(CAPFile cap, AID targetDomain, GPData.LFDBH hashFunction) throws GPException, IOException {
         if (targetDomain == null) {
             targetDomain = sdAID;
         }
@@ -594,9 +595,10 @@ public class GPSession {
     }
 
     public void loadCapFile(CAPFile cap, AID targetDomain, AID dapDomain, byte[] dap, GPData.LFDBH hashFunction)
-            throws GPException {
-        final byte[] hash = hashFunction == null ? new byte[0] : cap.getLoadFileDataHash(hashFunction.algo);
-        final var code = cap.getCode();
+            throws GPException, IOException {
+        CAPFileExt extendedCap = new CAPFileExt(cap);
+        byte[] code = extendedCap.getCode();
+        byte[] hash = hashFunction == null ? new byte[0] : extendedCap.getLoadFileDataHash(hashFunction.algo);
         final byte[] loadParams = new byte[0]; // FIXME
         final var pkg = cap.getPackageAID();
 
