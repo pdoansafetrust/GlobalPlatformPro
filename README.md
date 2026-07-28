@@ -61,10 +61,16 @@ It's that simple!
    - PACE and SCP03 improvements, Java 25 builds, many fixes
  - Full history in [CHANGELOG.md](CHANGELOG.md)
 
-# Users's Guide
-Begin from [Getting Started guide](https://github.com/martinpaljak/GlobalPlatformPro/wiki/Getting-Started) in the wiki
+## Maven
 
-> [!IMPORTANT]
+Published artifact coordinates (snapshot version `26.06.05-SNAPSHOT`):
+
+| Artifact | Maven Coordinates |
+|---|---|
+| **gp** (fat CLI jar) | `com.github.martinpaljak:gp:26.06.05-SNAPSHOT` |
+| **globalplatformpro** (library) | `com.github.martinpaljak:globalplatformpro:26.06.05-SNAPSHOT` |
+
+Published to **mvn.javacard.pro** Maven repository (auto-deployed on CI).
 > 1. Use it?
 >    - Add a ⭐
 > 2. Like it?
