@@ -48,6 +48,61 @@ jobs:
           user: mvn@mvn.javacard.pro
           key: ${{ secrets.SSH_KEY }}
           host_fp: SHA256:auiF3nHWvDmvq2stDl+QEECCqMcDp+FY1/bDRnvxpRw
+      - name: Build Maven repo layout for gh-pages
+        if: startsWith(github.ref, 'refs/tags/v') && matrix.java == 21
+        run: |
+          set -e
+          REPO=tool/target/maven-repo
+          mkdir -p "$REPO/com/github/martinpaljak/gp/26.06.05-SNAPSHOT"
+          cp tool/target/gp.jar "$REPO/com/github/martinpaljak/gp/26.06.05-SNAPSHOT/gp-26.06.05-20260729.010000.1.jar"
+          cat > "$REPO/com/github/martinpaljak/gp/26.06.05-SNAPSHOT/gp-26.06.05-20260729.010000.1.pom" << 'POM'
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.github.martinpaljak</groupId>
+  <artifactId>gp</artifactId>
+  <version>26.06.05-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>GlobalPlatformPro CLI</name>
+</project>
+POM
+          sha1sum "$REPO/com/github/martinpaljak/gp/26.06.05-SNAPSHOT/gp-26.06.05-20260729.010000.1.jar" | awk '{print $1}' > "$REPO/com/github/martinpaljak/gp/26.06.05-SNAPSHOT/gp-26.06.05-20260729.010000.1.jar.sha1"
+          md5sum "$REPO/com/github/martinpaljak/gp/26.06.05-SNAPSHOT/gp-26.06.05-20260729.010000.1.jar" | awk '{print $1}' > "$REPO/com/github/martinpaljak/gp/26.06.05-SNAPSHOT/gp-26.06.05-20260729.010000.1.jar.md5"
+          sha1sum "$REPO/com/github/martinpaljak/gp/26.06.05-SNAPSHOT/gp-26.06.05-20260729.010000.1.pom" | awk '{print $1}' > "$REPO/com/github/martinpaljak/gp/26.06.05-SNAPSHOT/gp-26.06.05-20260729.010000.1.pom.sha1"
+          md5sum "$REPO/com/github/martinpaljak/gp/26.06.05-SNAPSHOT/gp-26.06.05-20260729.010000.1.pom" | awk '{print $1}' > "$REPO/com/github/martinpaljak/gp/26.06.05-SNAPSHOT/gp-26.06.05-20260729.010000.1.pom.md5"
+          cat > "$REPO/com/github/martinpaljak/gp/maven-metadata.xml" << 'META'
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.github.martinpaljak</groupId>
+  <artifactId>gp</artifactId>
+  <versioning>
+    <latest>26.06.05-SNAPSHOT</latest>
+    <release>26.06.05-SNAPSHOT</release>
+    <versions>
+      <version>26.06.05-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20260729010000</lastUpdated>
+    <snapshot>
+      <timestamp>20260729.010000</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>jar</extension>
+        <value>26.06.05-20260729.010000.1</value>
+        <updated>20260729010000</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>26.06.05-20260729.010000.1</value>
+        <updated>20260729010000</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+</metadata>
+META
+          echo "Maven repo built at $REPO"
+          ls -R "$REPO"
       - name: Deploy Maven repo to GitHub Pages
         if: startsWith(github.ref, 'refs/tags/v') && matrix.java == 21
         uses: peaceiris/actions-gh-pages@v4
