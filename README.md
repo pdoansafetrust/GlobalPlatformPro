@@ -64,6 +64,26 @@ It's that simple!
 # Users's Guide
 Begin from [Getting Started guide](https://github.com/martinpaljak/GlobalPlatformPro/wiki/Getting-Started) in the wiki
 
+## Maven
+
+Add the snapshot repository and dependency:
+
+```xml
+<repository>
+  <id>pdoansafetrust-gp</id>
+  <url>https://pdoansafetrust.github.io/GlobalPlatformPro</url>
+  <snapshots><enabled>true</enabled></snapshots>
+</repository>
+
+<dependency>
+  <groupId>com.github.martinpaljak</groupId>
+  <artifactId>gp</artifactId>
+  <version>26.06.05-SNAPSHOT</version>
+</dependency>
+```
+
+The `gp` artifact is a fat JAR containing GPPro CLI (same as `gp.jar`). For library-only usage, replace the artifactId with `globalplatformpro`.
+
 > [!IMPORTANT]
 > 1. Use it?
 >    - Add a ⭐
